@@ -21,33 +21,21 @@ export default function App() {
     });
 
   const passwordRef = useRef(null);
-  
-// Ensure minimum length of 12
-const minLength = Math.max(12, length);
 
-// Password generator
-const passwordGenerator = useCallback(() => {
-  const generateRandomChar = (characters) => {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    return characters[randomIndex];
-  };
+  const passwordGenerator = useCallback(() => {
+    let pass = "";
+    let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-  const upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const lowerCase = 'abcdefghijklmnopqrstuvwxyz';
-  const numbers = '0123456789';
-  const specialChars = '!@#$%*()<>[]{}?,./:;`~\'"';
+    if (numbersAllowed) str += "0123456789";
+    if (charAllowed) str += "!@#$%*";
 
-  let characters = upperCase + lowerCase;
-  if (numbersAllowed) characters += numbers;
-  if (charAllowed) characters += specialChars;
+    for (let i = 0; i <= length; i++) {
+      let char = Math.floor(Math.random() * str.length + 1);
+      pass += str.charAt(char);
+    }
 
-  let password = '';
-  for (let i = 0; i < minLength; i++) {
-    password += generateRandomChar(characters);
-  }
-
-  setPassword(password);
-}, [minLength, numbersAllowed, charAllowed, setPassword]);
+    setPassword(pass);
+  }, [length, numbersAllowed, charAllowed, setPassword]);
 
   const copyPasswordToClipboard = useCallback(() => {
     passwordRef.current?.select();
