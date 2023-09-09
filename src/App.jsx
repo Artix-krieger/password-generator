@@ -22,20 +22,26 @@ export default function App() {
 
   const passwordRef = useRef(null);
 
+  // Ensure minimum length of 12
+  const minLength = Math.max(12, length);
+  
+  // Password generator
   const passwordGenerator = useCallback(() => {
     let pass = "";
     let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     if (numbersAllowed) str += "0123456789";
-    if (charAllowed) str += "!@#$%*";
+    if (charAllowed) str += "!@#$%*()<>[]{}?,./:;`~'\"";
+    
+    const randomValues = window.crypto.getRandomValues(new Uint32Array(minLength));
 
-    for (let i = 0; i <= length; i++) {
-      let char = Math.floor(Math.random() * str.length + 1);
-      pass += str.charAt(char);
+    for (let i = 0; i < minLength; i++) {
+      let char = randomValues[i] % str.length;
+      pass += str[char];
     }
 
     setPassword(pass);
-  }, [length, numbersAllowed, charAllowed, setPassword]);
+  }, [minLength, numbersAllowed, charAllowed]);
 
   const copyPasswordToClipboard = useCallback(() => {
     passwordRef.current?.select();
